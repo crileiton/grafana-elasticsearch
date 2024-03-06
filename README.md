@@ -1,6 +1,6 @@
 # grafana-elasticsearch
 
-# docker compose up -d
+ docker compose up -d
 
  <http://localhost:3000/>
 
