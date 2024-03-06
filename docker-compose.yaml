@@ -1,0 +1,68 @@
+# docker compose up -d
+# http://localhost:3000/
+# user: admin
+# password: admin
+
+# python3 script.py > results.json
+
+#curl -X POST "http://localhost:9200/index_cleiton/type_jmeter/_bulk" -H 'Content-Type: application/json' --data-binary @results.json > /dev/null
+#curl -X POST "http://localhost:9200/index_cleiton/type_jmeter/_bulk" -H 'Content-Type: application/json' --data-binary @results.json | jq
+
+#Datasource elasticsearch
+# http://elasticsearch:9200
+
+
+#curl -X GET "http://localhost:9200/index_cleiton/type_jmeter/_search?q=responseTime:118"
+
+version: '3.8'
+services:
+
+  elasticsearch:
+    image: docker.io/elastic/elasticsearch:7.16.3
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: "single-node"
+    networks:
+      - mi_red
+
+  # logstash:
+  #   image: docker.io/elastic/logstash:7.16.3
+  #   volumes:
+  #     - source: ./pipelines
+  #       target: /usr/share/logstash/pipeline
+  #       type: bind
+  #   ports:
+  #     - "12201:12201/udp"
+  #     - "5000:5000"
+  #     - "9600:9600"
+  #   networks:
+  #     - elk
+  #   depends_on:
+  #     - elasticsearch
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+     - GF_SERVER_ROOT_URL=http://my.grafana.server/
+     - GF_INSTALL_PLUGINS=grafana-clock-panel
+    volumes:
+      - '$PWD/data:/var/lib/grafana'
+    depends_on:
+      - elasticsearch
+    networks:
+      - mi_red
+    # volumes:
+    #   - grafana-storage:/var/lib/grafana
+# volumes:
+#   grafana-storage: {}
+
+networks:
+  mi_red:
+    driver: bridge
