@@ -11,6 +11,7 @@
  python3 script.py > results.json
 
  curl -X POST "<http://localhost:9200/index_cleiton/type_jmeter/_bulk>" -H 'Content-Type: application/json' --data-binary @results.json > /dev/null
+ 
  curl -X POST "<http://localhost:9200/index_cleiton/type_jmeter/_bulk>" -H 'Content-Type: application/json' --data-binary @results.json | jq
 
 ### Datasource elasticsearch
